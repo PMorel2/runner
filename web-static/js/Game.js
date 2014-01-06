@@ -3,6 +3,10 @@ var Game = function(){
 	this.localTime = 0;
 	this.globalTime = 0;
 	
+	bg = new Image();
+	bg.src = '/web-static/img/background.jpg';
+	
+	bg.drawBg = false;
 
 	//var win = new Window('main-window', document.getElementById("gui"));
 	
@@ -25,30 +29,11 @@ var Game = function(){
 	});*/
 	
 	this.canvas = $("#main-scene-canvas").get(0);
-	this.graphics = this.canvas.getContext("2d");
+	graphics = this.canvas.getContext("2d");
 	
 	
-	var sleep = 1;
-	var baseUrl = "/web-static/img/getImage.php?url=";
-	var imageList = {
-		"background": "/web-static/img/background.jpg&sleep=" + sleep,
-		"test": "/web-static/img/getImage.php?url=test.jpg&sleep=" + sleep
-		/*"player-idle": baseUrl + "sprite/idle-1-2-1.png&sleep=" + sleep,
-		"player-attack": baseUrl + "sprite/attack-1-2-1.png&sleep=" + sleep,
-		"player-move": baseUrl + "sprite/move-1-2-1.png&sleep=" + sleep,
-		"mob-idle": baseUrl + "sprite/idle-1.png&sleep=" + sleep,
-		"mob-damage" : baseUrl + "sprite/damage-1.png&sleep=" + sleep,
-		"mob-attack" : baseUrl + "sprite/attack-1.png&sleep=" + sleep,
-		"mob-death" : baseUrl + "sprite/death-1.png&sleep=" + sleep	*/
-	}; 
-	
-	var soundList = {};
-	
-	this.assetManager = new AssetManager();
-	this.assetManager.startLoading(imageList, soundList);
-	
-	this.graphics.fillStyle = "red";
-	this.graphics.fillRect(100,100, this.canvas.width, this.canvas.height);
+	graphics.fillStyle = "red";
+	//graphics.fillRect(0,0, this.canvas.width, this.canvas.height);
 	
 	$scene = $("#main-scene");
 
@@ -57,8 +42,11 @@ var Game = function(){
 	}));
 	$(win.root).hide();*/
 
-	/*player = new Player();
-	camera = new Camera(player);
+	player = new Player();
+	enemy = new Enemy();
+	enemyList = {};
+	
+	/*camera = new Camera(player);
 
 	player.setPosition(3530, 1770);
 	player.init();
@@ -70,35 +58,50 @@ var Game = function(){
 		}					
 	);*/
 	
-	this.bg = new Image();
-	this.bg.src = '/web-static/img/background.jpg';
+	bg.onload = function(){
+		//graphics.drawImage(bg, 0, 0 );
+	}
+
+	count = 1;
 	
-	this.graphics.drawImage(this.bg, 10, 10);
-	
-	self.mainLoop();
+	requestAnimFrame(
+		function loop() {
+			self.mainLoop();
+			requestAnimFrame(loop);
+		}					
+	);
 };
 Game.prototype.mainLoop = function(){
 	var now = Date.now();
 	var globalTimeDelta = now - this.globalTime;
 	var localTimeDelta = Math.min(50, globalTimeDelta);
 	this.localTime += localTimeDelta;
-	//player.update(localTimeDelta / 1000);
+	player.Update(localTimeDelta / 1000, this.localTime);
+	enemy.Update(localTimeDelta / 1000);
 	
-	this.graphics.canvas = this.canvas;
-	this.graphics.drawTimeMillis = now;
-	
-	
-	//this.graphics.clearRect(0,0, this.canvas.width, this.canvas.height);
-	
-	if(!this.assetManager.isDoneLoading()){
-	
-		this.assetManager.renderLoadingProgress(this.graphics);
-	}else{
-		this.graphics.save();		//sauvegarder le contexte
-		//camera.render(this.graphics);
-		this.graphics.clearRect(0,0, this.canvas.width, this.canvas.height);
-		this.graphics.drawImage(this.assetManager.getImage("test"), 0, 0 );
-	
-		this.graphics.restore();	//restore le contexte
-	}
+	graphics.canvas = this.canvas;
+	graphics.drawTimeMillis = now;
+	graphics.clearRect(0,0, this.canvas.width, this.canvas.height);
+	graphics.save();		//sauvegarder le contexte
+	graphics.drawImage(bg, 0, 0 );
+
+			////// Dessin des personnages
+	player.Draw(graphics);
+	enemy.Draw(graphics);
+	graphics.restore();	//restore le contexte
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
