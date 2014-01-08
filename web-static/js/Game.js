@@ -44,7 +44,8 @@ var Game = function(){
 
 	player = new Player();
 	enemy = new Enemy();
-	enemyList = {};
+	patternList = new PatternList();
+	enemyList = [];
 	
 	/*camera = new Camera(player);
 
@@ -77,7 +78,17 @@ Game.prototype.mainLoop = function(){
 	var localTimeDelta = Math.min(50, globalTimeDelta);
 	this.localTime += localTimeDelta;
 	player.Update(localTimeDelta / 1000, this.localTime);
-	enemy.Update(localTimeDelta / 1000);
+	
+	patternList.AddPattern(enemyList, 1);
+	
+	if(enemyList[0].active){
+		for ( var i = 0; i < enemyList.length; i++)
+		{
+			enemy[i].Update(localTimeDelta / 1000, this.localTime)
+		}
+	}
+	
+	this.CheckCollision(player, enemy);
 	
 	graphics.canvas = this.canvas;
 	graphics.drawTimeMillis = now;
@@ -87,8 +98,21 @@ Game.prototype.mainLoop = function(){
 
 			////// Dessin des personnages
 	player.Draw(graphics);
-	enemy.Draw(graphics);
+	for (var i = 0; i < enemyList.length; i++)
+	{
+		enemyList[i].Draw(graphics);
+	}
+	//enemy.Draw(graphics);
 	graphics.restore();	//restore le contexte
+};
+
+Game.prototype.CheckCollision = function(player, enemy){
+	
+	if((player.x + player.width/2 > enemy.x - enemy.width/2) && (player.x - player.width/2 < enemy.x + enemy.width/2)
+		&& player.y + player.height/2 > enemy.y - enemy.height/2 && player.y - player.height/2 < enemy.y + enemy.width/2)
+		{
+			player.changeColor();
+		}
 };
 
 

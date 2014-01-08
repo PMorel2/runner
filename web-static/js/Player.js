@@ -104,6 +104,8 @@ Player.prototype.Jump = function(moveDirection, deltaTime){
 		this.y += 100 * deltaTime;
 };
 
+
+
 Player.prototype.Draw = function(g){
 	
 	g.fillStyle = this.color;
