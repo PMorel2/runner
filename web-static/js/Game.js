@@ -79,13 +79,17 @@ Game.prototype.mainLoop = function(){
 	this.localTime += localTimeDelta;
 	player.Update(localTimeDelta / 1000, this.localTime);
 	
-	patternList.AddPattern(enemyList, 1);
+	if(enemyList.length < 5){
+		patternList.AddPattern(enemyList, 1);
+	}
 	
-	if(enemyList[0].active){
-		for ( var i = 0; i < enemyList.length; i++)
-		{
-			enemy[i].Update(localTimeDelta / 1000, this.localTime)
-		}
+	
+	for ( var i = 0; i < enemyList.length; i++)
+	{
+		if(enemyList[i].active)
+			enemyList[i].Update(localTimeDelta / 1000, this.localTime)
+		else
+			enemyList.splice(i, 1);
 	}
 	
 	this.CheckCollision(player, enemy);
@@ -101,6 +105,7 @@ Game.prototype.mainLoop = function(){
 	for (var i = 0; i < enemyList.length; i++)
 	{
 		enemyList[i].Draw(graphics);
+		this.CheckCollision(player, enemyList[i]);
 	}
 	//enemy.Draw(graphics);
 	graphics.restore();	//restore le contexte
@@ -111,7 +116,9 @@ Game.prototype.CheckCollision = function(player, enemy){
 	if((player.x + player.width/2 > enemy.x - enemy.width/2) && (player.x - player.width/2 < enemy.x + enemy.width/2)
 		&& player.y + player.height/2 > enemy.y - enemy.height/2 && player.y - player.height/2 < enemy.y + enemy.width/2)
 		{
-			player.changeColor();
+			player.health -= enemy.dmg;
+			enemy.active = false;
+			console.log(player.health);
 		}
 };
 

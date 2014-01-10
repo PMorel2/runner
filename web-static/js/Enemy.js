@@ -4,7 +4,7 @@ var Enemy = function (){
 	this.y = 100;
 	this.width = 25;
 	this.height = 40;
-	this.active = false;
+	this.active = true;
 	this.dmg = 1;
 	this.speed = 80;
 	this.color = "black";
@@ -21,6 +21,9 @@ Enemy.prototype.init = function(x, y, color){
 Enemy.prototype.Update = function(deltaTime)
 {
 	this.move(deltaTime);
+	
+	if(this.x < 0)
+		this.active = false;
 };
 
 Enemy.prototype.move = function(deltaTime)
@@ -32,5 +35,4 @@ Enemy.prototype.Draw = function(g)
 {
 	g.fillStyle = this.color;
 	g.fillRect(this.x, this.y, this.width, this.height);
-	console.log("drawn");
 }

@@ -1,5 +1,16 @@
 var Player = function(){
-	self = this;
+	var self = this;
+	Character.call(this);
+	
+	$(document).keyup(function(e){
+		console.log("up" + e.which);
+		self.onKeyUp(e);
+	});
+	
+	$(document).keydown(function(e){
+		console.log("keydown" + e.which);
+		self.onKeyDown(e);
+	});
 	
 	this.gameTime = 0;
 	
@@ -7,25 +18,15 @@ var Player = function(){
 	this.x = 50;
 	this.y = 400;
 	this.baseY = 400;
-	this.width = 20;
-	this.height = 30;
+	this.width = 70;
+	this.height = 90;
 	this.health = 5;
 	
 		////Actions du Joueur
 	this.color = "black";
 	this.isJumping = false;
-	this.JumpUpTime = 1000;
+	this.JumpUpTime = 2000;
 	this.JumpStartTime = 0;
-
-	
-	$(document).keyup(function(e){
-		console.log(e.which);
-		self.onKeyUp(e);
-	});
-	$(document).keydown(function(e){
-		console.log(e.which);
-		self.onKeyDown(e);
-	});
 	
 	this.keylist = {};
 
@@ -99,9 +100,9 @@ Player.prototype.changeColor = function(){
 
 Player.prototype.Jump = function(moveDirection, deltaTime){
 	if(moveDirection == "up")
-		this.y -= 100 * deltaTime;
+		this.y -= 200 * deltaTime;
 	else if (moveDirection == "down")
-		this.y += 100 * deltaTime;
+		this.y += 200 * deltaTime;
 };
 
 
