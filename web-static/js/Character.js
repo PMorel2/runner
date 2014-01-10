@@ -1,7 +1,6 @@
 var Character = function(){
 
     this.revertDirection = false;
-
 	this.spriteList = {};
 	this.currentSprite = false;
 	
@@ -23,14 +22,14 @@ Character.prototype.createSprite = function(id, image, width, height, colCount, 
 Character.prototype.setSprite = function(anim, onComplete){
 	this.lastAnimId = anim;
 	var spriteId = anim;
-	//console.log("new anim " + spriteId);
+	console.log("sprite ID : " + spriteId);
 	if(this.currentSprite != this.spriteList[spriteId]){
 		if(!this.currentSprite || this.currentSprite.loop || this.currentSprite.currentFrame == this.currentSprite.frameCount - 1){
 			if(this.currentSprite){
 				this.currentSprite.stop();
 				this.currentSprite.hide();
 			}
-			console.log("sprite ID : " + spriteId);
+			console.log("sprite ID 2 : " + this.spriteList[spriteId]);
 			this.currentSprite = this.spriteList[spriteId];
 			this.currentSprite.resetAnim();
 			this.currentSprite.play(onComplete);

@@ -1,4 +1,4 @@
-var Player = function(){
+var Player = function(assetManager){
 	var self = this;
 	Character.call(this);
 	
@@ -16,29 +16,43 @@ var Player = function(){
 	
 		////Paramètres
 	this.x = 50;
-	this.y = 400;
-	this.baseY = 400;
+	this.y = 500;
+	this.baseY = 500;
 	this.width = 70;
 	this.height = 90;
 	this.health = 5;
+	this.centerX = 50; ////A regler > modifier le draw()
+	this.centerY = 50;
+	
+		////Images du joueur
+	this.createSprite("Run", assetManager.getImage("JellykidRuns"), 200, 100, 2, 1, true);
+	
+	this.setSprite("Run");
+	
+	this.currentSprite.setFrameRate(3);
+	
+	for(var i in this.spriteList){
+		this.spriteList[i].setCenter(this.centerX, this.centerY);
+	}
 	
 		////Actions du Joueur
 	this.color = "black";
 	this.isJumping = false;
-	this.JumpUpTime = 2000;
+	this.JumpUpTime = 1200;
 	this.JumpStartTime = 0;
 	
 	this.keylist = {};
 
 }
 
+Player.prototype = new Character();
 Player.prototype.init = function(){
 };
 
 Player.prototype.Update = function(deltaTime, gameTime){
 
 	this.gameTime = gameTime;
-
+	
 	if(this.isJumping)
 	{
 		if(gameTime - this.JumpStartTime < this.JumpUpTime)
@@ -100,23 +114,10 @@ Player.prototype.changeColor = function(){
 
 Player.prototype.Jump = function(moveDirection, deltaTime){
 	if(moveDirection == "up")
-		this.y -= 200 * deltaTime;
+		this.y -= 140 * deltaTime;
 	else if (moveDirection == "down")
-		this.y += 200 * deltaTime;
+		this.y += 140 * deltaTime;
 };
-
-
-
-Player.prototype.Draw = function(g){
-	
-	g.fillStyle = this.color;
-	g.fillRect(this.x, this.y, this.width, this.height)
-	
-};
-
-
-
-
 
 
 

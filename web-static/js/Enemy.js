@@ -22,7 +22,7 @@ Enemy.prototype.Update = function(deltaTime)
 {
 	this.move(deltaTime);
 	
-	if(this.x < 0)
+	if(this.x + this.width/2 < 0)
 		this.active = false;
 };
 
@@ -34,5 +34,5 @@ Enemy.prototype.move = function(deltaTime)
 Enemy.prototype.Draw = function(g)
 {
 	g.fillStyle = this.color;
-	g.fillRect(this.x, this.y, this.width, this.height);
+	g.fillRect(this.x - this.width/2, this.y - this.height/2, this.width, this.height);
 }

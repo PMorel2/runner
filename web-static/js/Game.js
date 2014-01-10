@@ -4,66 +4,33 @@ var Game = function(){
 	this.globalTime = 0;
 	
 	bg = new Image();
-	bg.src = '/web-static/img/background.jpg';
 	
 	bg.drawBg = false;
 
-	//var win = new Window('main-window', document.getElementById("gui"));
-	
-	/*infoPage = new InfoPage();
-	try{
-		win.addPage("info", infoPage);
-		win.addPage("description", new Page("<strong>hello</strong> world"));
-		win.addPage("equipement", new Page("lorem ipsum"));
-	}catch(e){
-		console.log("New Exception : " + e);
-	}
-	
-	infoPage.refreshData({
-		name: "Johnny",
-		title: "be good",
-		xp: 200,
-		hp: 643,
-		power: 65,
-		progress: 0.8
-	});*/
-	
 	this.canvas = $("#main-scene-canvas").get(0);
 	graphics = this.canvas.getContext("2d");
 	
+	var sleep = 1;
+	var imageList = {
+		"background": "/web-static/img/background.jpg",
+		"JellykidRuns": "/web-static/img/jellykidRuns.png",
+		"JellykidJump1": "/web-static/img/jellykid-jump1.png",
+		"JellykidJump2": "/web-static/img/jellykid-jump2.png"
+	};
 	
-	graphics.fillStyle = "red";
-	//graphics.fillRect(0,0, this.canvas.width, this.canvas.height);
+	var soundList = {};
+	this.assetManager = new AssetManager();
+	this.assetManager.startLoading(imageList, soundList);
 	
 	$scene = $("#main-scene");
 
-	/*$("#gui").append($("<div>").button().css({position:"absolute",top:"5px",left:"5px"}).append("Menu").click(function(){
-		$(win.root).toggle('fade', 200);
-	}));
-	$(win.root).hide();*/
 
-	player = new Player();
+	player = new Player(this.assetManager);
 	enemy = new Enemy();
 	patternList = new PatternList();
 	enemyList = [];
 	
-	/*camera = new Camera(player);
-
-	player.setPosition(3530, 1770);
-	player.init();
-	
-	requestAnimFrame(
-		function loop() {
-			self.mainLoop();
-			requestAnimFrame(loop);
-		}					
-	);*/
-	
-	bg.onload = function(){
-		//graphics.drawImage(bg, 0, 0 );
-	}
-
-	count = 1;
+	//camera = new Camera(player);
 	
 	requestAnimFrame(
 		function loop() {
@@ -97,11 +64,11 @@ Game.prototype.mainLoop = function(){
 	graphics.canvas = this.canvas;
 	graphics.drawTimeMillis = now;
 	graphics.clearRect(0,0, this.canvas.width, this.canvas.height);
-	graphics.save();		//sauvegarder le contexte
-	graphics.drawImage(bg, 0, 0 );
+	graphics.save();
+	graphics.drawImage(this.assetManager.getImage("background"), 0, 0 );
 
 			////// Dessin des personnages
-	player.Draw(graphics);
+	player.render(graphics);
 	for (var i = 0; i < enemyList.length; i++)
 	{
 		enemyList[i].Draw(graphics);

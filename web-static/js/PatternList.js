@@ -23,15 +23,15 @@ PatternList.prototype.AddEnnemies = function(enemyList, pattern){
 		switch(pattern[i])
 		{
 			case 1 : 
-				enemy1.init(800 + 200 * i, 400, "black");
+				enemy1.init(800 + 500 * i, 400, "black");
 			break;
 			
 			case 2 :
-				enemy1.init(800 + 200 * i, 200, "black");
+				enemy1.init(800 + 500 * i, 200, "black");
 			
 			case 3 :
-				enemy1.init(800 + 200 * i, 400, "black");
-				enemy2.init(800 + 200 * i, 100, "blue");
+				enemy1.init(800 + 500 * i, 400, "black");
+				enemy2.init(800 + 500 * i, 100, "blue");
 			break;
 		}
 			
