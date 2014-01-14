@@ -40,31 +40,34 @@ AssetManager.prototype.loadSound = function(url, id, onload){
 		this.assetLoaded();
 	}else{
 		this.soundsToLoad[id] = url;
-		var sound = soundManager.createSound({
-			id: id,
-			url: url,
-			autoLoad: true,
-			autoPlay: false,
-			onload: function() {
-				delete _this.soundsToLoad[id];
-				_this.assetLoaded();
-				if(onload){
-					onload(sound);
-				}
-			},
-			volume: 100
+		var soundElm = new Audio();
+		soundElm.addEventListener("canplay", function(){
+			delete _this.soundsToLoad[id];
+			_this.assetLoaded();
+		});
+		soundElm.addEventListener("stalled", function(){
+			delete _this.soundsToLoad[id];
+			console.log("Error Loading" + url);
+			_this.assetLoaded();
 		});
 		
-		sound.playLoop = function(){
-			this.play({			
-				onfinish: function() {
-					if(!this._play || user.data.soundEnabled){
-						this.playLoop();
-					}
-				}
-			});
-		};
-		this.sounds[id] = sound;
+		var sourceElm = document.createElement("source");
+		sourceElm.src = url;
+		switch(url.substring(url.length - 3)){
+			case 'mp3':
+				sourceElm.type = "audio/mpeg";
+				break;
+			case 'wav' : 
+				sourceElm.type = "audio/wav";
+				break;
+			case 'ogg' : 
+				sourceElm.type = "audio/ogg";
+				break;
+		}
+		soundElm.appendChild(sourceElm);
+		document.body.appendChild(soundElm);
+
+		this.sounds[id] = soundElm;
 	}
 	return this.sounds[id];
 };

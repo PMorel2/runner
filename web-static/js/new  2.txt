@@ -1,0 +1,9 @@
+﻿replacer les morceaux de code pour que ce soit propre
+
+animations collisions à placée dans les ennemis
+
+background
+
+enemis collorés (type 3)
+
+ajouter sons

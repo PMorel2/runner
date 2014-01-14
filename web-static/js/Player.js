@@ -24,6 +24,9 @@ var Player = function(assetManager){
 	this.centerX = 50;
 	this.centerY = 50;
 	this.frameRate = 3;
+	this.score = 0;
+	this.combo = 0;
+	this.enterPressed = false;
 	
 		////Images du joueur
 	this.createSprite("Run", assetManager.getImage("JellykidRuns"), 200, 100, 2, 1, true);
@@ -32,20 +35,33 @@ var Player = function(assetManager){
 	this.createSprite("Run-red", assetManager.getImage("JellykidRuns-red"), 200, 100, 2, 1, true);
 	this.createSprite("Jump1-red", assetManager.getImage("JellykidJump1-red"), 100, 100, 1, 1, true);
 	this.createSprite("Jump2-red", assetManager.getImage("JellykidJump2-red"), 100, 100, 1, 1, true);
+	this.createSprite("JellyKid-Crouch", assetManager.getImage("JellyKid-Crouching"), 100, 100, 1, 1, true);
+	this.createSprite("JellyKid-Crouch-red", assetManager.getImage("JellyKid-Crouching-red"), 100, 100, 1, 1, true);
 	
 	this.setSprite("Run");
 	
 	this.currentSprite.setFrameRate(this.frameRate);
 	
 	for(var i in this.spriteList){
-		this.spriteList[i].setCenter(this.centerX, this.centerY);
+		if(this.spriteList[i].id == "JellyKid-Crouch")
+			this.spriteList[i].setCenter(25, 50);
+		else if (this.spriteList[i].id == "JellyKid-Crouch-red")
+			this.spriteList[i].setCenter(25, 50);
+		else
+			this.spriteList[i].setCenter(this.centerX, this.centerY);
 	}
+	
+	this.spriteList["JellyKid-Crouch"].setCenter(25, 50);
 	
 		////Actions du Joueur
 	this.color = "blue";
 	this.isJumping = false;
-	this.JumpUpTime = 1700;
+	this.JumpUpTime = 1300;
 	this.JumpStartTime = 0;
+	
+	this.isCrouching = false;
+	this.CrouchTime = 1700;
+	this.crouchStartTime = 0;
 	
 	this.keylist = {};
 
@@ -89,6 +105,28 @@ Player.prototype.Update = function(deltaTime, gameTime){
 				this.setSprite("Run-red");
 		}
 	}
+	
+	if(this.isCrouching)
+	{
+		if(gameTime - this.crouchStartTime < this.CrouchTime)
+		{
+			if(this.color == "blue"){
+				this.setSprite("JellyKid-Crouch");
+				}
+			else
+				this.setSprite("JellyKid-Crouch-red");
+		}
+		else
+		{
+			this.isCrouching = false;
+			this.setCrouchY(false);
+			
+			if (this.color == "blue")
+				this.setSprite("Run");
+			else
+				this.setSprite("Run-red");
+		}
+	}
 };
 
 Player.prototype.move = function()
@@ -105,14 +143,23 @@ Player.prototype.onKeyDown = function(k){
 		this.changeColor();
 	}
 	
-	if((k.which == 122 || k.which == 90) && !this.isJumping)
+	if((k.which == 122 || k.which == 90) && !this.isJumping && !this.isCrouching)
 	{
 		this.isJumping = true;
 		this.JumpStartTime = this.gameTime;
 	}
 	
+	if((k.which == 115 || k.which == 83) && !this.isCrouching && !this.isJumping)
+	{
+		this.setCrouchY(true);
+		this.isCrouching = true;
+		this.crouchStartTime = this.gameTime;
+	}
 	
-	
+	if(k.which == 13)
+	{
+		this.enterPressed = true;
+	}
 	
 };
 
@@ -137,12 +184,17 @@ Player.prototype.changeColor = function(){
 
 Player.prototype.Jump = function(moveDirection, deltaTime){
 	if(moveDirection == "up" && this.y > 310)
-		this.y -= 130 * deltaTime;
+		this.y -= 160 * deltaTime;
 	else if (moveDirection == "down" && this.y < this.baseY)
-		this.y += 130 * deltaTime;
+		this.y += 160 * deltaTime;
 };
 
-
+Player.prototype.setCrouchY = function(crouched){
+	if(crouched)
+		this.y += 50;
+	else
+		this.y -= 50;
+}
 
 
 

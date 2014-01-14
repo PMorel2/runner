@@ -7,18 +7,24 @@ var Enemy = function (assetManager){
 	this.y = 100;
 	this.width = 25;
 	this.height = 40;
-	this.active = true;
+	this.active = false;
 	this.dmg = 1;
-	this.speed = 80;
 	this.color = "black";
-}
+	this.type = 0;
+	this.scoreValue = 10;
+	this.speed = 100;
+	this.scoreGiven = false;
+};
+
+Enemy.speed = 100;
 
 Enemy.prototype = new Character();
 
-Enemy.prototype.init = function(x, color, type){
+Enemy.prototype.init = function(x, color, type, speed){
 	this.x = x;
 	this.color = color;
 	this.active = true;
+	this.speed = speed;
 	
 	switch(type){
 		case 1 :
@@ -31,6 +37,7 @@ Enemy.prototype.init = function(x, color, type){
 			this.y = 500;
 			this.width = 40;
 			this.height = 70;
+			this.type = 1;
 		break;
 		
 		case 2 :
@@ -40,18 +47,20 @@ Enemy.prototype.init = function(x, color, type){
 			
 			this.currentSprite.setCenter(50, 50);
 			
-			this.y = 400;
+			this.y = 430;
 			this.width = 80;
 			this.height = 80;
-			
+			this.type = 2;
 	}
 }
 
-Enemy.prototype.Update = function(deltaTime)
+Enemy.prototype.Update = function(deltaTime, gameTime)
 {
 	this.move(deltaTime);
 	
-	if(this.x + this.width/2 < 0)
+	this.x -= this.speed * deltaTime;
+	
+	if(this.x + this.width < 0)
 		this.active = false;
 };
 
