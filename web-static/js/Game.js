@@ -15,7 +15,12 @@ var Game = function(){
 		"background": "/web-static/img/background.jpg",
 		"JellykidRuns": "/web-static/img/jellykidRuns.png",
 		"JellykidJump1": "/web-static/img/jellykid-jump1.png",
-		"JellykidJump2": "/web-static/img/jellykid-jump2.png"
+		"JellykidJump2": "/web-static/img/jellykid-jump2.png",
+		"JellykidRuns-red": "/web-static/img/jellykidRuns-red.png",
+		"JellykidJump1-red": "/web-static/img/jellykid_jump_red1.png",
+		"JellykidJump2-red": "/web-static/img/jellykid_jump_red2.png",
+		"Impossibear" : "/web-static/img/impossibear120.png",
+		"catbug" : "/web-static/img/catbug.png"
 	};
 	
 	var soundList = {};
@@ -27,7 +32,7 @@ var Game = function(){
 
 	player = new Player(this.assetManager);
 	enemy = new Enemy();
-	patternList = new PatternList();
+	patternList = new PatternList(this.assetManager);
 	enemyList = [];
 	
 	//camera = new Camera(player);
@@ -47,7 +52,7 @@ Game.prototype.mainLoop = function(){
 	player.Update(localTimeDelta / 1000, this.localTime);
 	
 	if(enemyList.length < 5){
-		patternList.AddPattern(enemyList, 1);
+		patternList.AddPattern(enemyList, 1, this.assetManager);
 	}
 	
 	
@@ -71,7 +76,7 @@ Game.prototype.mainLoop = function(){
 	player.render(graphics);
 	for (var i = 0; i < enemyList.length; i++)
 	{
-		enemyList[i].Draw(graphics);
+		enemyList[i].render(graphics);
 		this.CheckCollision(player, enemyList[i]);
 	}
 	//enemy.Draw(graphics);
