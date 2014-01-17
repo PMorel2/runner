@@ -4,6 +4,9 @@ var Game = function(){
 	this.globalTime = 0;
 	this.gameState = "Start Menu";
 	
+	this.nextPattern = 1;
+	this.lastPatter = 0;
+	
 	bg = new Image();
 	
 	bg.drawBg = false;
@@ -24,12 +27,16 @@ var Game = function(){
 		"JellyKid-Crouching" : "/web-static/img/jellyKid-Crouching.png",
 		"JellyKid-Crouching-red" : "/web-static/img/jellyKid-Crouching-red.png",
 		"Start" : "/web-static/img/start.png",
-		"Game Over" : "/web-static/img/gameover.png"
-		
+		"Game Over" : "/web-static/img/gameover.png",
+		"Explosion" : "/web-static/img/explosion.png"
 	};
 	
 	var soundList = {
-		"music" : "/web-static/sounds/music.mp3"
+		"music" : "/web-static/sounds/music.mp3",
+		"death" : "/web-static/sounds/JellyKidDiesFade2.wav",
+		"GOMusic" : "/web-static/sounds/gameOver.mp3",
+		"cookie" : "/web-static/sounds/cookie.mp3",
+		"ouch" : "/web-static/sounds/ouch.mp3"
 	};
 	this.assetManager = new AssetManager();
 	this.assetManager.startLoading(imageList, soundList);
@@ -58,7 +65,19 @@ Game.prototype.mainLoop = function(){
 	this.localTime += localTimeDelta;
 	
 	if(enemyList.length < 1){
-		enemyManager.AddPattern(enemyList, 1, this.assetManager);
+		
+		this.lastPattern = this.nextPattern;
+		
+		do
+		{
+			this.nextPattern = Math.floor((Math.random()* 5)+1);
+			console.log("lllll");
+			
+		}while (this.nextPattern == this.lastPattern);
+		
+		console.log("Pattern : " + this.nextPattern);
+		
+		enemyManager.AddPattern(enemyList, this.nextPattern, this.assetManager);
 	}
 	
 	graphics.canvas = this.canvas;
@@ -75,12 +94,15 @@ Game.prototype.mainLoop = function(){
 			if(player.enterPressed)
 			{
 				player.enterPressed = false;
-				this.gameState = "Game Loop";
+				this.gameState = "Game Over";
 			}
 			
 			graphics.restore();
 				
 		break;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////// GAME LOOP
+	
 	
 		case "Game Loop" :
 		
@@ -95,22 +117,27 @@ Game.prototype.mainLoop = function(){
 			
 			if(player.health <= 0)
 			{
-				this.gameState = "Game Over";
-				music.pause();
 				music.currentTime = 0;
+				music.pause();
+				
+				var deathSound = this.assetManager.getSound("death");
+				deathSound.loop = false;
+				deathSound.volume = 1;
+				deathSound.play();
+				this.gameState = "Game Over";
 			}
 			
 			enemyManager.Update(localTimeDelta / 1000, this.localTime);
 
 			for ( var i = 0; i < enemyList.length; i++)
 			{
+				enemyList[i].speed = enemyManager.speed;
+			
 				if(enemyList[i].active){
 					enemyList[i].Update(localTimeDelta / 1000, this.localTime)
-					if(enemyList[i].x < player.x && !enemyList[i].scoreGiven){
-						console.log(enemyList[i].scoreGiven);
+					if(enemyList[i].x < player.x && !enemyList[i].scoreGiven && enemyList[i].type != 3 && enemyList[i].type != 4){
 						enemyList[i].scoreGiven = true;
 						player.combo++;
-						console.log(enemyList[i].scoreGiven);
 						player.score += enemy.scoreValue * player.combo;
 					}
 				}
@@ -126,47 +153,73 @@ Game.prototype.mainLoop = function(){
 			
 			graphics.drawImage(this.assetManager.getImage("background"), 0, 0 );
 
-					////// Dessin des personnages
+								////// Dessin des personnages
 			player.render(graphics);
 			for (var i = 0; i < enemyList.length; i++)
 			{
-				if(enemyList[i].active){
-					enemyList[i].render(graphics);
+				if(!enemyList[i].collisionDone){
 					this.CheckCollision(player, enemyList[i]);
 				}
+				
+				if(enemyList[i].type != 3 && enemyList[i].type != 4)
+					enemyList[i].render(graphics);
+				else if (enemyList[i].active)
+					enemyList[i].render(graphics);
 			}
 			
 			graphics.font = "30px Comic Sans MS";
 			graphics.fillStyle = "green";
 			
-			graphics.fillText("LIFE " , 10, 60)
+			graphics.fillText("LIFE " , 10, 50)
 			
-			graphics.strokeRect(100, 30, 150, 40);
+			graphics.strokeRect(100, 20, 150, 40);
 			
 			if(player.health > 2)
 				graphics.fillStyle = "green";
 			else
 				graphics.fillStyle = "red";
 			
-			graphics.fillRect(100, 30, 30 * player.health, 40);
+			graphics.fillRect(100, 20, 30 * player.health, 40);
 			
 			
 			graphics.fillStyle = "pink";
-			graphics.fillText("Score : " + player.score, 300, 50);
+			graphics.textAlign = "center";
+			graphics.fillText("Score : " + player.score, graphics.canvas.width/2, 50);
 
 			graphics.fillStyle = "blue";
-			graphics.fillText("Combo : " + player.combo, 580, 50);
-			graphics.fillText("Speed : " + enemyManager.speed, 600, 100);
+			graphics.fillText("Combo : " + player.combo, 700, 50);
 			
 			graphics.restore();
 			
 			break;
 			
+			//////////////////////////////////////////////////////////////////////// GAME OVER
+			
 			case "Game Over" :
+			
+			var deathMusic = this.assetManager.getSound("GOMusic");
+				deathMusic.loop = true;
+				deathMusic.volume = 0.8;
+				deathMusic.play();
+			
 				graphics.save();
 			
-				graphics.clearRect(0,0, this.canvas.width, this.canvas.height);
-				graphics.drawImage(this.assetManager.getImage("Game Over"), 0, 0);
+				//graphics.clearRect(0,0, this.canvas.width, this.canvas.height);
+				graphics.drawImage(this.assetManager.getImage("Game Over"), 0, 85);
+				
+				graphics.textAlign = "center";
+				graphics.font = "30px Comic Sans MS";
+				
+				var gradient=graphics.createLinearGradient(0,0,graphics.canvas.width,0);
+				gradient.addColorStop("0","blue");
+				gradient.addColorStop("0.5","orange");
+				gradient.addColorStop("1.0","blue");
+				
+				
+				graphics.fillStyle=gradient;
+				graphics.fillText("Press ENTER to play again !", graphics.canvas.width/2, 170);
+
+				graphics.fillText("You are DEAD !", graphics.canvas.width/2, 120);
 				
 				player.score = 0;
 				player.combo = 0;
@@ -180,6 +233,8 @@ Game.prototype.mainLoop = function(){
 				if(player.enterPressed)
 				{
 					player.enterPressed = false;
+					deathMusic.pause();
+					deathMusic.currentTime = 0;
 					this.gameState = "Start Menu";
 				}
 				
@@ -195,10 +250,36 @@ Game.prototype.CheckCollision = function(player, enemy){
 	if((player.x + player.width/2 > enemy.x - enemy.width/2) && (player.x - player.width/2 < enemy.x + enemy.width/2)
 		&& player.y + player.height/2 > enemy.y - enemy.height/2 && player.y - player.height/2 < enemy.y + enemy.width/2)
 		{
-			player.health -= enemy.dmg;
-			enemy.active = false;
-			player.combo = 0;
-			console.log(player.health);
+		
+			if(enemy.type == 3 || enemy.type == 4)
+			{
+				console.log("yyyy");
+				enemy.collisionDone = true;
+				
+				if(player.color == enemy.color)
+				{
+					player.score += enemy.scoreValue;
+					player.combo ++;
+					
+					var cookieSound = this.assetManager.getSound("cookie");
+					cookieSound.loop = false;
+					cookieSound.volume = 0.8;
+					cookieSound.play();
+				}
+				
+				enemy.active = false;
+			}
+			else{
+				player.health -= enemy.dmg;
+				enemy.collisionDone = true;
+				player.combo = 0;
+				enemy.setSprite("explosion");
+				
+				var ouchSound = this.assetManager.getSound("ouch");
+					ouchSound.loop = false;
+					ouchSound.volume = 0.8;
+					ouchSound.play();
+			}
 		}
 };
 
