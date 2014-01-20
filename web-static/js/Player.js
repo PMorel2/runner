@@ -2,19 +2,18 @@ var Player = function(assetManager){
 	var self = this;
 	Character.call(this);
 	
-	$(document).keyup(function(e){
-		console.log("up" + e.which);
-		self.onKeyUp(e);
-	});
+	//////// On récupère les entrées du joueur
+	
 	
 	$(document).keydown(function(e){
-		console.log("keydown" + e.which);
 		self.onKeyDown(e);
 	});
 	
-	this.gameTime = 0;
 	
-		////Paramètres
+	
+	//////// Paramètres
+	
+	this.gameTime = 0;
 	this.x = 50;
 	this.y = 500;
 	this.baseY = 500;
@@ -28,7 +27,8 @@ var Player = function(assetManager){
 	this.combo = 0;
 	this.enterPressed = false;
 	
-		////Images du joueur
+	//////// Sprites du joueur
+	
 	this.createSprite("Run", assetManager.getImage("JellykidRuns"), 200, 100, 2, 1, true);
 	this.createSprite("Jump1", assetManager.getImage("JellykidJump1"), 100, 100, 1, 1, true);
 	this.createSprite("Jump2", assetManager.getImage("JellykidJump2"), 100, 100, 1, 1, true);
@@ -51,9 +51,7 @@ var Player = function(assetManager){
 			this.spriteList[i].setCenter(this.centerX, this.centerY);
 	}
 	
-	this.spriteList["JellyKid-Crouch"].setCenter(25, 50);
-	
-		////Actions du Joueur
+	//////// Timing des actions du Joueur
 	this.color = "blue";
 	this.isJumping = false;
 	this.JumpUpTime = 1300;
@@ -62,9 +60,6 @@ var Player = function(assetManager){
 	this.isCrouching = false;
 	this.CrouchTime = 1700;
 	this.crouchStartTime = 0;
-	
-	this.keylist = {};
-
 }
 
 Player.prototype = new Character();
@@ -130,15 +125,10 @@ Player.prototype.Update = function(deltaTime, gameTime, speed){
 	}
 };
 
-Player.prototype.move = function()
-{
-	this.x += 10;
-}
+
 
 Player.prototype.onKeyDown = function(k){
 
-	console.log("touche : " + k.which);
-	
 	if(k.which == 113 || k.which == 81)
 	{
 		this.changeColor();
@@ -165,9 +155,7 @@ Player.prototype.onKeyDown = function(k){
 };
 
 
-Player.prototype.onKeyUp = function(k){
-	//this.keyList[k] = false;
-};
+//////// Gestion de la couleur
 
 Player.prototype.changeColor = function(){
 	
@@ -183,12 +171,16 @@ Player.prototype.changeColor = function(){
 	}
 }
 
+//////// Gestion du saut
+
 Player.prototype.Jump = function(moveDirection, deltaTime){
 	if(moveDirection == "up" && this.y > 310)
 		this.y -= 160 * deltaTime;
 	else if (moveDirection == "down" && this.y < this.baseY)
 		this.y += 160 * deltaTime;
 };
+
+//////// Géré la position en Y du joueur selon son état
 
 Player.prototype.setCrouchY = function(crouched){
 	if(crouched)

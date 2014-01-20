@@ -1,4 +1,4 @@
-var Enemy = function (assetManager){
+var Entity = function (assetManager){
 
 	Character.call(this);
 	
@@ -16,16 +16,18 @@ var Enemy = function (assetManager){
 	this.collisionDone = false;
 };
 
-Enemy.speed = 100;
+Entity.speed = 100;
 
-Enemy.prototype = new Character();
+Entity.prototype = new Character();
 
-Enemy.prototype.init = function(x, color, type, speed){
+Entity.prototype.init = function(x, color, type, speed){
 	this.x = x;
 	this.color = color;
 	this.active = true;
 	this.speed = speed;
 	
+	//////// Selon le type d'entity, on charge les sprites et on règle la position en Y
+	//////// Les bonus font partie du type "entity"
 		
 	switch(type){
 		case 1 :
@@ -110,7 +112,7 @@ Enemy.prototype.init = function(x, color, type, speed){
 	}
 }
 
-Enemy.prototype.Update = function(deltaTime, gameTime)
+Entity.prototype.Update = function(deltaTime, gameTime)
 {
 	this.move(deltaTime);
 	
@@ -120,7 +122,7 @@ Enemy.prototype.Update = function(deltaTime, gameTime)
 		this.active = false;
 };
 
-Enemy.prototype.move = function(deltaTime)
+Entity.prototype.move = function(deltaTime)
 {
 	this.x -= this.speed * deltaTime;
 };
