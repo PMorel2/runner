@@ -25,11 +25,12 @@ Enemy.prototype.init = function(x, color, type, speed){
 	this.color = color;
 	this.active = true;
 	this.speed = speed;
-	this.createSprite("explosion", this.assetManager.getImage("Explosion"), 320, 320, 5, 5, false);
 	
+		
 	switch(type){
 		case 1 :
 			this.createSprite("impossibear-idle", this.assetManager.getImage("Impossibear"), 120, 144, 1, 1, true);
+			this.createSprite("explosion", this.assetManager.getImage("Explosion"), 500, 500, 5, 5, false);
 	
 			this.setSprite("impossibear-idle");
 			
@@ -43,13 +44,14 @@ Enemy.prototype.init = function(x, color, type, speed){
 		
 		case 2 :
 			this.createSprite("Catbug", this.assetManager.getImage("catbug"), 200, 100, 2, 1, true);
+			this.createSprite("explosion", this.assetManager.getImage("Explosion"), 500, 500, 5, 5, false);
 	
 			this.setSprite("Catbug");
 			
 			this.currentSprite.setCenter(50, 50);
 			
 			this.y = 430;
-			this.width = 80;
+			this.width = 70;
 			this.height = 80;
 			this.type = 2;
 		break;
@@ -58,16 +60,22 @@ Enemy.prototype.init = function(x, color, type, speed){
 		
 			if (this.color == "blue")
 			{
-				this.createSprite("Run", this.assetManager.getImage("JellykidRuns"), 200, 100, 2, 1, true);
-				this.setSprite("Run");
+				this.createSprite("blueBonus", this.assetManager.getImage("Bonus"), 80, 93, 1, 1, true);
+				this.createSprite("eclat", this.assetManager.getImage("eaten"), 80, 93, 1, 1, false);
+				this.createSprite("wrong", this.assetManager.getImage("blueWrong"), 100, 100, 1, 1, false);
+				this.setSprite("blueBonus");
+				this.currentSprite.setCenter(40, 46);
 			}
 			else
 			{
-				this.createSprite("Run-red", this.assetManager.getImage("JellykidRuns-red"), 200, 100, 2, 1, true);
-				this.setSprite("Run-red");
+				this.createSprite("redBonuscookie", this.assetManager.getImage("Bonus-red"), 80, 93, 1, 1, true);
+				this.createSprite("eclat", this.assetManager.getImage("eaten-red"), 80, 93, 1, 1, false);
+				this.createSprite("wrong", this.assetManager.getImage("redWrong"), 100, 100, 1, 1, false);
+				this.setSprite("redBonuscookie");
+				this.currentSprite.setCenter(40, 46);
 			}
 		
-			this.y = 380;
+			this.y = 330;
 			this.width = 80;
 			this.height = 80;
 			this.type = 3;
@@ -78,16 +86,22 @@ Enemy.prototype.init = function(x, color, type, speed){
 		
 			if (this.color == "blue")
 			{
-				this.createSprite("Run", this.assetManager.getImage("JellykidRuns"), 200, 100, 2, 1, true);
-				this.setSprite("Run");
+				this.createSprite("blueBonus", this.assetManager.getImage("Bonus"), 80, 93, 1, 1, true);
+				this.createSprite("eclat", this.assetManager.getImage("eaten"), 80, 93, 1, 1, false);
+				this.createSprite("wrong", this.assetManager.getImage("blueWrong"), 100, 100, 1, 1, false);
+				this.setSprite("blueBonus");
+				this.currentSprite.setCenter(40, 46);
 			}
 			else
 			{
-				this.createSprite("Run-red", this.assetManager.getImage("JellykidRuns-red"), 200, 100, 2, 1, true);
-				this.setSprite("Run-red");
+				this.createSprite("redBonuscookie", this.assetManager.getImage("Bonus-red"), 80, 93, 1, 1, true);
+				this.createSprite("eclat", this.assetManager.getImage("eaten-red"), 80, 93, 1, 1, false);
+				this.createSprite("wrong", this.assetManager.getImage("redWrong"), 100, 100, 1, 1, false);
+				this.setSprite("redBonuscookie");
+				this.currentSprite.setCenter(40, 46);
 			}
 		
-			this.y = 600 - this.currentSprite.height;
+			this.y = 500;
 			this.width = 80;
 			this.height = 80;
 			this.type = 3;

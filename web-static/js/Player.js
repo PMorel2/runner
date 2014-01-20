@@ -71,8 +71,9 @@ Player.prototype = new Character();
 Player.prototype.init = function(){
 };
 
-Player.prototype.Update = function(deltaTime, gameTime){
+Player.prototype.Update = function(deltaTime, gameTime, speed){
 	this.gameTime = gameTime;
+	this.frameRate = speed / 10;
 	this.currentSprite.setFrameRate(this.frameRate);
 	
 	if(this.isJumping)

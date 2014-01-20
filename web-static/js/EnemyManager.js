@@ -1,7 +1,7 @@
 var EnemyManager = function(assetManager){
 	self = this;
 	
-	this.speed = 60;
+	this.speed = 65;
 	
 	this.assetManager = assetManager;
 	
@@ -37,10 +37,10 @@ EnemyManager.prototype.AddPattern = function(enemyList, patternIndex){
 
 EnemyManager.prototype.Update = function(deltaTime){
 
-	if (this.speed < 90)
+	if (this.speed < 107)
 		this.speed += 0.2 * deltaTime;
 	else
-		this.speed = 90;
+		this.speed = 107;
 };
 
 EnemyManager.prototype.AddEnnemies = function(enemyList, pattern){
