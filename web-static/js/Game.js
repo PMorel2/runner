@@ -35,6 +35,7 @@ var Game = function(){
 		"eaten-red" : "/web-static/img/eclat-red.png",
 		"blueWrong" : "/web-static/img/blueFailed.png",
 		"redWrong" : "/web-static/img/redFailed.png",
+		"pause" : "/web-static/img/pause.png"
 	};
 	
 	var soundList = {
@@ -83,6 +84,7 @@ Game.prototype.mainLoop = function(){
 	
 	graphics.canvas = this.canvas;
 	graphics.drawTimeMillis = now;
+	graphics.font = "30px Comic Sans MS";	//////// Comic Sans pour plus de swag
 	
 	
 	
@@ -113,8 +115,28 @@ Game.prototype.mainLoop = function(){
 	
 	//////// GAME LOOP
 	
+		case "Pause" :
+			
+			
+			graphics.drawImage(this.assetManager.getImage("pause"), 190, 100);
+			graphics.drawImage(this.assetManager.getImage("pause"), 490, 100);
+			graphics.fillText("PAUSE", 340, 150);
+			
+			if(player.enterPressed)
+			{
+					player.enterPressed = false;
+					this.gameState = "Game Loop";
+			}
+			
+		break;
 	
 		case "Game Loop" :
+		
+			if(player.enterPressed)
+			{
+					player.enterPressed = false;
+					this.gameState = "Pause";
+			}
 		
 			//////// Musique principale
 			var music = this.assetManager.getSound("music");
@@ -189,7 +211,6 @@ Game.prototype.mainLoop = function(){
 			
 			graphics.fillRect(0, 0, 800, 85);
 			
-			graphics.font = "30px Comic Sans MS";	//////// Comic Sans pour plus de swag
 			graphics.fillStyle = "green";
 			
 			graphics.fillText("LIFE " , 10, 50)
@@ -209,8 +230,6 @@ Game.prototype.mainLoop = function(){
 
 			graphics.fillStyle = "blue";
 			graphics.fillText("Combo : " + player.combo, 700, 50);
-			graphics.fillText("x : " + this.parallax.Layers[0].x + "xCopy : " + this.parallax.Layers[0].xCopy, 400, 150);
-			
 
 			graphics.restore();
 			
@@ -261,6 +280,7 @@ Game.prototype.mainLoop = function(){
 				if(player.enterPressed)
 				{
 					player.enterPressed = false;
+					this.AddPattern();
 					deathMusic.pause();
 					deathMusic.currentTime = 0;
 					this.gameState = "Start Menu";
@@ -299,6 +319,7 @@ Game.prototype.CheckCollision = function(player, entity){
 				else
 				{
 					player.combo = 0;
+					player.health -= entity.dmg / 2;
 				
 					entity.setSprite("wrong");
 					entity.currentSprite.setCenter(50, 50);
@@ -340,8 +361,6 @@ Game.prototype.AddPattern = function()
 			this.nextPattern = Math.floor((Math.random()* 5)+1);
 			
 		}while (this.nextPattern == this.lastPattern);
-		
-		console.log("Pattern : " + this.nextPattern);
 		
 		entityManager.AddPattern(entityList, this.nextPattern, this.assetManager);
 	}
