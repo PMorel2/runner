@@ -14,7 +14,7 @@ var Game = function(){
 	
 	//////// Asset Loading
 	var imageList = {
-		"background": "/web-static/img/background.jpg",
+		"background": "/web-static/img/background3.png",
 		"test" : "/web-static/img/test.png",
 		"JellykidRuns": "/web-static/img/jellykidRuns.png",
 		"JellykidJump1": "/web-static/img/jellykid-jump1.png",
@@ -95,7 +95,7 @@ Game.prototype.mainLoop = function(){
 	
 		case "Start Menu" :
 		
-			this.parallax.AddLayer(this.assetManager.getImage("background"), 20, 1920);
+			this.parallax.AddLayer(this.assetManager.getImage("background"), 20, 1000);
 			this.parallax.AddLayer(this.assetManager.getImage("test"), entityManager.speed, 800);
 		
 			graphics.save();
@@ -141,7 +141,7 @@ Game.prototype.mainLoop = function(){
 			//////// Musique principale
 			var music = this.assetManager.getSound("music");
 			music.loop = true;
-			music.volume = 0;
+			music.volume = 1;
 			music.play();
 			
 			//////// Update du background
@@ -153,6 +153,7 @@ Game.prototype.mainLoop = function(){
 			
 			if(player.health <= 0)
 			{
+				player.health = 0; //////// éviter que le rectangle ne se dessine si health = -0.5
 				music.currentTime = 0;
 				music.pause();
 				

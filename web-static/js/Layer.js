@@ -22,7 +22,11 @@ Layer.prototype.Update = function(deltaTime)
 	this.x -= this.speed * deltaTime;
 	this.xCopy -= this.speed * deltaTime;
 	
-	this.CheckPosition();
+	if(this.x  <= - this.width)
+		this.x = this.xCopy + this.width;
+	else if(this.xCopy <= - this.width)
+		this.xCopy = this.x + this.width;
+	//this.CheckPosition();
 }
 
 Layer.prototype.CheckPosition = function(){
@@ -30,5 +34,4 @@ Layer.prototype.CheckPosition = function(){
 		this.x = this.xCopy + this.width;
 	else if(this.xCopy <= - this.width)
 		this.xCopy = this.x + this.width;
-
 }
