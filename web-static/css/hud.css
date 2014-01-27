@@ -1,0 +1,33 @@
+body {
+	font-family : "Comic Sans MS";
+}
+
+.health{
+	position : absolute;
+	top : 25px;
+	left : 15px;
+	font-size: 26px;
+	text-align: center;
+	margin: 5px;
+	color : green;
+}
+
+.score{
+	position : absolute;
+	top : 25px;
+	left : 300px;
+	font-size: 26px;
+	text-align: center;
+	margin: 5px;
+	color : pink;
+}
+
+.combo{
+	position : absolute;
+	top : 25px;
+	left : 550px;
+	font-size: 26px;
+	text-align: center;
+	margin: 5px;
+	color : blue;
+}

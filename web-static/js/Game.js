@@ -11,11 +11,24 @@ var Game = function(){
 	this.canvas = $("#main-scene-canvas").get(0);
 	graphics = this.canvas.getContext("2d");
 	
+
+	// this.$health = $("<div>").addClass("health").append("Health");
+	// $("body").append(this.$health);
+	
+	// this.$score = $("<div>").addClass("score").append("Score");
+	// $("body").append(this.$score);
+	
+	// this.$combo = $("<div>").addClass("combo").append("Combo");
+	// $("body").append(this.$combo);
 	
 	//////// Asset Loading
 	var imageList = {
-		"background": "/web-static/img/background3.png",
-		"test" : "/web-static/img/test.png",
+		"Layer1": "/web-static/img/layer1.png",
+		"Layer2": "/web-static/img/layer2.png",
+		// "Layer3": "/web-static/img/layer3.png",
+		// "nolag1": "/web-static/img/nolag1.png",
+		// "nolag2": "/web-static/img/nolag2.png",
+		// "background": "/web-static/img/background.png",
 		"JellykidRuns": "/web-static/img/jellykidRuns.png",
 		"JellykidJump1": "/web-static/img/jellykid-jump1.png",
 		"JellykidJump2": "/web-static/img/jellykid-jump2.png",
@@ -35,7 +48,8 @@ var Game = function(){
 		"eaten-red" : "/web-static/img/eclat-red.png",
 		"blueWrong" : "/web-static/img/blueFailed.png",
 		"redWrong" : "/web-static/img/redFailed.png",
-		"pause" : "/web-static/img/pause.png"
+		"pause" : "/web-static/img/pause.png",
+		"cadre" : "/web-static/img/cadre.png"
 	};
 	
 	var soundList = {
@@ -84,7 +98,7 @@ Game.prototype.mainLoop = function(){
 	
 	graphics.canvas = this.canvas;
 	graphics.drawTimeMillis = now;
-	graphics.font = "30px Comic Sans MS";	//////// Comic Sans pour plus de swag
+	graphics.font = "30px Comic Sans MS";
 	
 	
 	
@@ -95,8 +109,12 @@ Game.prototype.mainLoop = function(){
 	
 		case "Start Menu" :
 		
-			this.parallax.AddLayer(this.assetManager.getImage("background"), 20, 1000);
-			this.parallax.AddLayer(this.assetManager.getImage("test"), entityManager.speed, 800);
+			this.parallax.AddLayer(this.assetManager.getImage("Layer1"), 10, 1600);
+			this.parallax.AddLayer(this.assetManager.getImage("Layer2"), 30, 1600);
+			this.parallax.AddLayer(this.assetManager.getImage("Layer3"), entityManager.speed, 1600);
+			// this.parallax.AddLayer(this.assetManager.getImage("nolag1"), 8, 1600);
+			// this.parallax.AddLayer(this.assetManager.getImage("nolag2"), 20, 1600);
+			// this.parallax.AddLayer(this.assetManager.getImage("background"), 20, 1600);
 		
 			graphics.save();
 		
@@ -141,7 +159,7 @@ Game.prototype.mainLoop = function(){
 			//////// Musique principale
 			var music = this.assetManager.getSound("music");
 			music.loop = true;
-			music.volume = 1;
+			music.volume = 0.1;
 			music.play();
 			
 			//////// Update du background
@@ -210,8 +228,9 @@ Game.prototype.mainLoop = function(){
 			
 			//////// Dessin des informations
 			
-			graphics.fillRect(0, 0, 800, 85);
-			
+			//////// Dessin du cadre
+			graphics.drawImage(this.assetManager.getImage("cadre"), 0, 0);
+						
 			graphics.fillStyle = "green";
 			
 			graphics.fillText("LIFE " , 10, 50)
@@ -224,6 +243,7 @@ Game.prototype.mainLoop = function(){
 				graphics.fillStyle = "red";
 			
 			graphics.fillRect(100, 20, 30 * player.health, 40);
+			
 			
 			graphics.fillStyle = "pink";
 			graphics.textAlign = "center";
@@ -366,16 +386,6 @@ Game.prototype.AddPattern = function()
 		entityManager.AddPattern(entityList, this.nextPattern, this.assetManager);
 	}
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
