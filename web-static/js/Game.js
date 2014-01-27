@@ -11,21 +11,11 @@ var Game = function(){
 	this.canvas = $("#main-scene-canvas").get(0);
 	graphics = this.canvas.getContext("2d");
 	
-
-	// this.$health = $("<div>").addClass("health").append("Health");
-	// $("body").append(this.$health);
-	
-	// this.$score = $("<div>").addClass("score").append("Score");
-	// $("body").append(this.$score);
-	
-	// this.$combo = $("<div>").addClass("combo").append("Combo");
-	// $("body").append(this.$combo);
-	
 	//////// Asset Loading
 	var imageList = {
 		"Layer1": "/web-static/img/layer1.png",
 		"Layer2": "/web-static/img/layer2.png",
-		// "Layer3": "/web-static/img/layer3.png",
+		"Layer3": "/web-static/img/layer3.png",
 		// "nolag1": "/web-static/img/nolag1.png",
 		// "nolag2": "/web-static/img/nolag2.png",
 		// "background": "/web-static/img/background.png",
@@ -74,6 +64,13 @@ var Game = function(){
 	entityManager = new EntityManager(this.assetManager);
 	entityList = [];
 	
+	this.parallax.AddLayer(this.assetManager.getImage("Layer1"), 10, 1600);
+	this.parallax.AddLayer(this.assetManager.getImage("Layer2"), entityManager.speed, 1600);
+	this.parallax.AddLayer(this.assetManager.getImage("Layer3"), 100, 1600);
+	// this.parallax.AddLayer(this.assetManager.getImage("nolag1"), 8, 1600);
+	// this.parallax.AddLayer(this.assetManager.getImage("nolag2"), 20, 1600);
+	// this.parallax.AddLayer(this.assetManager.getImage("background"), 20, 1600);
+	
 	
 	//////// Boucle principale
 	requestAnimFrame(
@@ -108,13 +105,6 @@ Game.prototype.mainLoop = function(){
 	switch(this.gameState){
 	
 		case "Start Menu" :
-		
-			this.parallax.AddLayer(this.assetManager.getImage("Layer1"), 10, 1600);
-			this.parallax.AddLayer(this.assetManager.getImage("Layer2"), 30, 1600);
-			this.parallax.AddLayer(this.assetManager.getImage("Layer3"), entityManager.speed, 1600);
-			// this.parallax.AddLayer(this.assetManager.getImage("nolag1"), 8, 1600);
-			// this.parallax.AddLayer(this.assetManager.getImage("nolag2"), 20, 1600);
-			// this.parallax.AddLayer(this.assetManager.getImage("background"), 20, 1600);
 		
 			graphics.save();
 		
@@ -159,7 +149,7 @@ Game.prototype.mainLoop = function(){
 			//////// Musique principale
 			var music = this.assetManager.getSound("music");
 			music.loop = true;
-			music.volume = 0.1;
+			music.volume = 0.8;
 			music.play();
 			
 			//////// Update du background
@@ -293,6 +283,7 @@ Game.prototype.mainLoop = function(){
 				player.health = 5;
 				player.framerate = 5;
 				entityManager.speed = 65;
+				this.parallax.Reset();
 				
 				entityList = [];
 				

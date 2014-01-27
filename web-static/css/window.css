@@ -1,0 +1,10 @@
+body {
+	font-family : "Comic Sans MS";
+	background : black;
+}
+
+#game{
+	position : fixed;
+	top : 10%;
+	left : 25%;
+}
