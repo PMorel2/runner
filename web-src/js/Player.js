@@ -197,23 +197,43 @@ Player.prototype.setCrouchY = function(crouched){
 Player.prototype.decreaseLives = function()
 {
 	this.lives--;
-	//$.runner.api('updateLives', this.lives);
-}
-
-Player.prototype.checkBestScore = function()
-{
-	if(true)
+	
+	if(this.live < this.bestScore)
 	{
-		this.bestScore = 50;
+		this.bestScore = this.score;
 		var dataToSend = {action:'updateBestScore', data:this.bestScore};
-		($.ajax({
+		$.ajax({
 		  url: 'api.php',
 		  method: 'POST',
 		  data: dataToSend,
 		  success: function (data) {
-			//console.log("SUCCESS");
-			//console.log(data);
+			console.log("SUCCESS");
+			console.log(data);
+		  },
+		  error : function(err){
+			console.log("ERROR");
 		  }
-		}));
+		});
+	}
+}
+
+Player.prototype.checkBestScore = function()
+{
+	if(this.score < this.bestScore)
+	{
+		this.bestScore = this.score;
+		var dataToSend = {action:'updateBestScore', data:this.bestScore};
+		$.ajax({
+		  url: 'api.php',
+		  method: 'POST',
+		  data: dataToSend,
+		  success: function (data) {
+			console.log("SUCCESS");
+			console.log(data);
+		  },
+		  error : function(err){
+			console.log("ERROR");
+		  }
+		});
 	}
 }

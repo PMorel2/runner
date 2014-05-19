@@ -22,6 +22,10 @@ class App {
 		}
 		return self::$_instance;
 	}
+	
+	public function getDB(){
+		return $this->db;
+	}
 
 	public function run(){
 		$_SESSION['locale'] = 'fr_FR';

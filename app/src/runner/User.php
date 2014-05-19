@@ -78,9 +78,9 @@ class User
 	
 	public function updateLives($lives){
 		echo("ok");
-		$query = App::getInstance()->getDB()->prepare('UPDATE user SET lives = :lives WHERE id = :id');
+		$query = App::getApp()->getDB()->prepare('UPDATE users SET lives = :lives WHERE id = :id');
 		$query ->execute(['lives' => $lives, 'id' => $this->id]);
-		$query = App::getInstance()->getDB()->prepare('SELECT lives FROM user WHERE id = :id');
+		$query = App::getApp()->getDB()->prepare('SELECT lives FROM users WHERE id = :id');
 		$query ->execute(['id' => $this->id]);
 		$result = $query ->fetch();
 		
@@ -90,9 +90,9 @@ class User
 	}
 	
 	public function updateBestScore($bestScore){
-		$query = App::getInstance()->getDB()->prepare('UPDATE user SET bestScore = :bestScore WHERE id = :id');
+		$query = App::getApp()->getDB()->prepare('UPDATE users SET bestScore = :bestScore WHERE id = :id');
 		$query ->execute(['bestScore' => $bestScore, 'id' => $this->id]);
-		$query = App::getInstance()->getDB()->prepare('SELECT bestScore FROM user WHERE id = :id');
+		$query = App::getApp()->getDB()->prepare('SELECT bestScore FROM users WHERE id = :id');
 		$query ->execute(['id' => $this->id]);
 		$result = $query ->fetch();
 		

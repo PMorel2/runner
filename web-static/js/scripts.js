@@ -615,6 +615,8 @@ Game.prototype.mainLoop = function(){
 				deathSound.loop = false;
 				deathSound.volume = 1;
 				deathSound.play();
+				player.checkBestScore();
+				player.decreaseLives();
 				this.gameState = "Game Over";
 			}
 			
@@ -683,7 +685,7 @@ Game.prototype.mainLoop = function(){
 			
 			graphics.fillStyle = "pink";
 			graphics.textAlign = "center";
-			graphics.fillText("Score : " + player.score, graphics.canvas.width/2, 50);
+			graphics.fillText("Score : " + player.score, 500, 50);
 
 			graphics.fillStyle = "blue";
 			graphics.fillText("Combo : " + player.combo, 700, 50);
@@ -721,10 +723,11 @@ Game.prototype.mainLoop = function(){
 
 				graphics.fillText("You are DEAD !", graphics.canvas.width/2 - 200, 120);
 				
+				if(player.lives <= 0)
+					graphics.fillText("You do not have a life to play again, send requests", graphics.canvas.width/2 - 200, 120);
 				
-				player.checkBestScore();
-				player.decreaseLives();
 				
+			
 				//////// On remet les valeurs à 0
 				
 				player.score = 0;
@@ -1116,25 +1119,44 @@ Player.prototype.setCrouchY = function(crouched){
 Player.prototype.decreaseLives = function()
 {
 	this.lives--;
-	//$.runner.api('updateLives', this.lives);
-}
-
-Player.prototype.checkBestScore = function()
-{
-	if(true)
+	
+	if(this.live < this.bestScore)
 	{
-		console.log("updating");
-		this.bestScore = 50;
+		this.bestScore = this.score;
 		var dataToSend = {action:'updateBestScore', data:this.bestScore};
-		($.ajax({
+		$.ajax({
 		  url: 'api.php',
 		  method: 'POST',
 		  data: dataToSend,
 		  success: function (data) {
-			//console.log("SUCCESS");
-			//console.log(data);
+			console.log("SUCCESS");
+			console.log(data);
+		  },
+		  error : function(err){
+			console.log("ERROR");
 		  }
-		}));
+		});
+	}
+}
+
+Player.prototype.checkBestScore = function()
+{
+	if(this.score < this.bestScore)
+	{
+		this.bestScore = this.score;
+		var dataToSend = {action:'updateBestScore', data:this.bestScore};
+		$.ajax({
+		  url: 'api.php',
+		  method: 'POST',
+		  data: dataToSend,
+		  success: function (data) {
+			console.log("SUCCESS");
+			console.log(data);
+		  },
+		  error : function(err){
+			console.log("ERROR");
+		  }
+		});
 	}
 }
 var Sprite = function(id, image, width, height, colCount, rowCount, loop){
@@ -1333,6 +1355,43 @@ $.getElmRegion = function(elm){
 		width: w,
 		height: h
 	};
+};
+
+$.runner = {
+
+	api: function(pAction, pData, callback){
+		var dataToSend = {action:pAction, data:pData};
+		if(ENCRYPT_ENABLED){
+			dataToSend = {d: Aes.Ctr.encrypt(JSON.stringify(dataToSend), 'E7AC2CB8ABF9745EC31D3ABCFD28D', 256)};
+		}
+		$.ajax({
+			url: 'api.php',
+			method: 'POST',
+			data: dataToSend,
+			success: function(resData){
+				console.log("Success");
+				console.log(resData);
+				try{
+					resData = JSON.parse(resData);
+					if(resData.error){
+						alert(resData.error);
+						if(resData.reload){
+							location.href = "index.php";
+						}
+					}else if(typeof(callback) == 'function'){
+						callback(resData);
+					}
+				}catch(e){
+					console.log("JSON parse failed!");
+				}
+			},
+			error: function(o){
+				console.log("Failure");
+				console.log(o);
+			}
+		});
+	}
+
 };
 
 $.ease = function(from, to, func, options){

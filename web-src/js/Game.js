@@ -166,6 +166,8 @@ Game.prototype.mainLoop = function(){
 				deathSound.loop = false;
 				deathSound.volume = 1;
 				deathSound.play();
+				player.checkBestScore();
+				player.decreaseLives();
 				this.gameState = "Game Over";
 			}
 			
@@ -220,7 +222,7 @@ Game.prototype.mainLoop = function(){
 						
 			graphics.fillStyle = "green";
 			
-			graphics.fillText("LIFE " , 10, 50)
+			graphics.fillText("LIFE " , 5, 50)
 			
 			graphics.strokeRect(100, 20, 150, 40);
 			
@@ -234,7 +236,7 @@ Game.prototype.mainLoop = function(){
 			
 			graphics.fillStyle = "pink";
 			graphics.textAlign = "center";
-			graphics.fillText("Score : " + player.score, graphics.canvas.width/2, 50);
+			graphics.fillText("Score : " + player.score, 500, 50);
 
 			graphics.fillStyle = "blue";
 			graphics.fillText("Combo : " + player.combo, 700, 50);
@@ -272,10 +274,11 @@ Game.prototype.mainLoop = function(){
 
 				graphics.fillText("You are DEAD !", graphics.canvas.width/2 - 200, 120);
 				
+				if(player.lives <= 0)
+					graphics.fillText("You do not have a life to play again, send requests", graphics.canvas.width/2 - 200, 120);
 				
-				player.checkBestScore();
-				player.decreaseLives();
 				
+			
 				//////// On remet les valeurs à 0
 				
 				player.score = 0;
