@@ -1,0 +1,2 @@
+<?php
+	// DEFINE DATABASE (PROD)

@@ -29,12 +29,10 @@ ParallaxBackground.prototype.Draw = function(graphics)
 	for ( var i = 0; i < this.Layers.length; i++)
 	{
 		if(this.Layers[i].x <= 800 && this.Layers[i].x + this.Layers[i].width >= 0){
-			console.log("L1 drawn : " + i);
 			graphics.drawImage(this.Layers[i].image, this.Layers[i].x, 0);
 			}
 		
 		if(this.Layers[i].xCopy <= 800 && this.Layers[i].xCopy + this.Layers[i].width >= 0){
-			console.log("L2 drawn : " + i);
 			graphics.drawImage(this.Layers[i].image, this.Layers[i].xCopy, 0);
 			}
 	}
