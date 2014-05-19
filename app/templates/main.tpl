@@ -7,10 +7,6 @@ include ('header.tpl');
 </head>
 <body>
 
-<?php
-echo '<div style="color:green"> Bonjour '.$_SESSION['user']->getLogin().' !</div>';
-?>
-
 <script>
 var user = <?php echo $_SESSION['user']->toJSON()?>;
 var ENCRYPT_ENABLED = <?php echo (ENCRYPT_ENABLED?'true':'false')?>;

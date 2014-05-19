@@ -1,4 +1,4 @@
-var Player = function(assetManager){
+var Player = function(assetManager, lives, bestScore){
 	var self = this;
 	Character.call(this);
 	
@@ -26,6 +26,11 @@ var Player = function(assetManager){
 	this.score = 0;
 	this.combo = 0;
 	this.enterPressed = false;
+	this.lives = lives;
+	this.bestScore = bestScore;
+	
+	console.log(this.lives);
+	console.log(this.bestScore);
 	
 	//////// Sprites du joueur
 	
@@ -189,5 +194,26 @@ Player.prototype.setCrouchY = function(crouched){
 		this.y -= 50;
 }
 
+Player.prototype.decreaseLives = function()
+{
+	this.lives--;
+	//$.runner.api('updateLives', this.lives);
+}
 
-
+Player.prototype.checkBestScore = function()
+{
+	if(true)
+	{
+		this.bestScore = 50;
+		var dataToSend = {action:'updateBestScore', data:this.bestScore};
+		($.ajax({
+		  url: 'api.php',
+		  method: 'POST',
+		  data: dataToSend,
+		  success: function (data) {
+			//console.log("SUCCESS");
+			//console.log(data);
+		  }
+		}));
+	}
+}

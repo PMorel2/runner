@@ -3,13 +3,13 @@ namespace runner;
 
 class User
 {
-
 	const LOGIN_MIN_LENGTH = 3;
 	const PASSWORD_MIN_LENGTH = 3;
 
 	private $id;
 	private $facebookID;
 	private $lives;
+	private $bestScore;
 	private $firstName;
 	private $lastName;
 	private $friendList;
@@ -23,6 +23,7 @@ class User
 		$this->firstName = $data->fb_first_name;
 		$this->lastName = $data->fb_last_name;
 		$this->lives = $data->lives;
+		$this->bestScore = $data->bestScore;
 		$this->friendList = [];
 		foreach($friendList['data'] as $friend){
 			if(isset($friend['installed'])){
@@ -54,8 +55,6 @@ class User
 				$fbData = $fb->api('/me');
 				$fbUserFirstName = $fbData['first_name'];
 				$fbUserLastName = $fbData['last_name'];
-				echo("prenom : ".$fbUserFirstName);
-				echo("  nom : ".$fbUserLastName);
 				
 				$query = $db->prepare('INSERT INTO users (fb_first_name,fb_last_name, facebookID) VALUES (?,?,?)');
 				$query->execute([$fbUserFirstName,$fbUserLastName, $fbUserId]);
@@ -75,7 +74,31 @@ class User
 			}
 			
 		}
+	}
 	
+	public function updateLives($lives){
+		echo("ok");
+		$query = App::getInstance()->getDB()->prepare('UPDATE user SET lives = :lives WHERE id = :id');
+		$query ->execute(['lives' => $lives, 'id' => $this->id]);
+		$query = App::getInstance()->getDB()->prepare('SELECT lives FROM user WHERE id = :id');
+		$query ->execute(['id' => $this->id]);
+		$result = $query ->fetch();
+		
+		$this->lives = (int)$result->lives;
+		
+		return $result;
+	}
+	
+	public function updateBestScore($bestScore){
+		$query = App::getInstance()->getDB()->prepare('UPDATE user SET bestScore = :bestScore WHERE id = :id');
+		$query ->execute(['bestScore' => $bestScore, 'id' => $this->id]);
+		$query = App::getInstance()->getDB()->prepare('SELECT bestScore FROM user WHERE id = :id');
+		$query ->execute(['id' => $this->id]);
+		$result = $query ->fetch();
+		
+		$this->bestScore = (int)$result->bestScore;
+		
+		return $result;
 	}
 	
 	public function getLogin(){
@@ -92,8 +115,9 @@ class User
 		return json_encode([
 			'first_name' => $this->firstName,
 			'last_name' => $this->lastName,
-			'friendList' => $this->friendList
+			'friendList' => $this->friendList,
+			'lives' => $this->lives,
+			'bestScore' => $this->bestScore
 		]);
 	}
-	
 }

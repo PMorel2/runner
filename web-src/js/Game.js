@@ -16,9 +16,7 @@ var Game = function(){
 		"Layer1": "/web-static/img/layer1.png",
 		"Layer2": "/web-static/img/layer2.png",
 		"Layer3": "/web-static/img/layer3.png",
-		// "nolag1": "/web-static/img/nolag1.png",
-		// "nolag2": "/web-static/img/nolag2.png",
-		// "background": "/web-static/img/background.png",
+		
 		"JellykidRuns": "/web-static/img/jellykidRuns.png",
 		"JellykidJump1": "/web-static/img/jellykid-jump1.png",
 		"JellykidJump2": "/web-static/img/jellykid-jump2.png",
@@ -59,17 +57,16 @@ var Game = function(){
 	
 	this.parallax = new ParallaxBackground();
 
-	player = new Player(this.assetManager);
+	player = new Player(this.assetManager, user.lives, user.bestScore);
 	entity = new Entity();
 	entityManager = new EntityManager(this.assetManager);
 	entityList = [];
 	
+	//console.log("user lives: ".user.lives);
+	
 	this.parallax.AddLayer(this.assetManager.getImage("Layer1"), 10, 1600);
 	this.parallax.AddLayer(this.assetManager.getImage("Layer2"), entityManager.speed, 1600);
 	this.parallax.AddLayer(this.assetManager.getImage("Layer3"), 100, 1600);
-	// this.parallax.AddLayer(this.assetManager.getImage("nolag1"), 8, 1600);
-	// this.parallax.AddLayer(this.assetManager.getImage("nolag2"), 20, 1600);
-	// this.parallax.AddLayer(this.assetManager.getImage("background"), 20, 1600);
 	
 	
 	//////// Boucle principale
@@ -275,6 +272,9 @@ Game.prototype.mainLoop = function(){
 
 				graphics.fillText("You are DEAD !", graphics.canvas.width/2 - 200, 120);
 				
+				
+				player.checkBestScore();
+				player.decreaseLives();
 				
 				//////// On remet les valeurs à 0
 				

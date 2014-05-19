@@ -36,6 +36,43 @@ $.getElmRegion = function(elm){
 	};
 };
 
+$.runner = {
+
+	api: function(pAction, pData, callback){
+		var dataToSend = {action:pAction, data:pData};
+		if(ENCRYPT_ENABLED){
+			dataToSend = {d: Aes.Ctr.encrypt(JSON.stringify(dataToSend), 'E7AC2CB8ABF9745EC31D3ABCFD28D', 256)};
+		}
+		$.ajax({
+			url: 'api.php',
+			method: 'POST',
+			data: dataToSend,
+			success: function(resData){
+				console.log("Success");
+				console.log(resData);
+				try{
+					resData = JSON.parse(resData);
+					if(resData.error){
+						alert(resData.error);
+						if(resData.reload){
+							location.href = "index.php";
+						}
+					}else if(typeof(callback) == 'function'){
+						callback(resData);
+					}
+				}catch(e){
+					console.log("JSON parse failed!");
+				}
+			},
+			error: function(o){
+				console.log("Failure");
+				console.log(o);
+			}
+		});
+	}
+
+};
+
 $.ease = function(from, to, func, options){
 	var isObject = true;
 	if(typeof from != "object"){
