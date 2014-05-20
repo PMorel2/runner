@@ -453,9 +453,9 @@ var Game = function(){
 	var self = this;
 	this.localTime = 0;
 	this.globalTime = 0;
-	this.gameState = "Start Menu";
 	this.nextPattern = 1;
 	this.lastPatter = 0;
+	this.gameState = "Start Menu";
 	
 	this.canvas = $("#main-scene-canvas").get(0);
 	graphics = this.canvas.getContext("2d");
@@ -465,7 +465,7 @@ var Game = function(){
 		"Layer1": "/web-static/img/layer1.png",
 		"Layer2": "/web-static/img/layer2.png",
 		"Layer3": "/web-static/img/layer3.png",
-		
+		"icon": "/web-static/img/Jelly_Kid.png",
 		"JellykidRuns": "/web-static/img/jellykidRuns.png",
 		"JellykidJump1": "/web-static/img/jellykid-jump1.png",
 		"JellykidJump2": "/web-static/img/jellykid-jump2.png",
@@ -511,7 +511,6 @@ var Game = function(){
 	entityManager = new EntityManager(this.assetManager);
 	entityList = [];
 	
-	//console.log("user lives: ".user.lives);
 	
 	this.parallax.AddLayer(this.assetManager.getImage("Layer1"), 10, 1600);
 	this.parallax.AddLayer(this.assetManager.getImage("Layer2"), entityManager.speed, 1600);
@@ -550,6 +549,16 @@ Game.prototype.mainLoop = function(){
 	
 	switch(this.gameState){
 	
+		case "nolife" :
+			
+			graphics.drawImage(this.assetManager.getImage("Game Over"), 0, 35);
+			
+			graphics.font = "25px Comic Sans MS";
+			graphics.fillText("YOU NEED A LIFE TO PLAY, SADLY YOU HAVE NONE." ,  60, 80);
+			graphics.fillText("PLEASE COME BACK TOMORROW OR INVITE FRIENDS !" , 50, 550);
+			
+		break;
+	
 		case "Start Menu" :
 		
 			graphics.save();
@@ -559,7 +568,11 @@ Game.prototype.mainLoop = function(){
 			if(player.enterPressed)
 			{
 				player.enterPressed = false;
-				this.gameState = "Game Loop";
+				
+				if(player.lives > 0)
+					this.gameState = "Game Loop";
+				else
+					this.gameState = "nolife";
 			}
 			
 			graphics.restore();
@@ -671,7 +684,7 @@ Game.prototype.mainLoop = function(){
 						
 			graphics.fillStyle = "green";
 			
-			graphics.fillText("LIFE " , 10, 50)
+			graphics.fillText("LIFE " , 5, 50);
 			
 			graphics.strokeRect(100, 20, 150, 40);
 			
@@ -682,6 +695,14 @@ Game.prototype.mainLoop = function(){
 			
 			graphics.fillRect(100, 20, 30 * player.health, 40);
 			
+			graphics.drawImage(this.assetManager.getImage("icon"), 290, 10);
+			
+			graphics.fillStyle = "cyan";
+			
+			graphics.fillText("X" + player.lives, 350, 50);
+			
+			graphics.fillStyle = "yellow";
+			graphics.fillText("Best Score : " + player.bestScore, 500, 590);
 			
 			graphics.fillStyle = "pink";
 			graphics.textAlign = "center";
@@ -707,8 +728,10 @@ Game.prototype.mainLoop = function(){
 			
 				graphics.save();
 			
-				//graphics.clearRect(0,0, this.canvas.width, this.canvas.height);
 				graphics.drawImage(this.assetManager.getImage("Game Over"), 0, 85);
+				
+				graphics.fillStyle = "yellow";
+				graphics.fillText("Best Score : " + player.bestScore, 500, 590);
 				
 				graphics.textAlign = "center";
 				graphics.font = "30px Comic Sans MS";
@@ -722,10 +745,6 @@ Game.prototype.mainLoop = function(){
 				graphics.fillText("Press ENTER to play again !", graphics.canvas.width/2 + 200, 150);
 
 				graphics.fillText("You are DEAD !", graphics.canvas.width/2 - 200, 120);
-				
-				if(player.lives <= 0)
-					graphics.fillText("You do not have a life to play again, send requests", graphics.canvas.width/2 - 200, 120);
-				
 				
 			
 				//////// On remet les valeurs à 0
@@ -951,9 +970,6 @@ var Player = function(assetManager, lives, bestScore){
 	this.lives = lives;
 	this.bestScore = bestScore;
 	
-	console.log(this.lives);
-	console.log(this.bestScore);
-	
 	//////// Sprites du joueur
 	
 	this.createSprite("Run", assetManager.getImage("JellykidRuns"), 200, 100, 2, 1, true);
@@ -1119,29 +1135,25 @@ Player.prototype.setCrouchY = function(crouched){
 Player.prototype.decreaseLives = function()
 {
 	this.lives--;
-	
-	if(this.live < this.bestScore)
-	{
-		this.bestScore = this.score;
-		var dataToSend = {action:'updateBestScore', data:this.bestScore};
-		$.ajax({
-		  url: 'api.php',
-		  method: 'POST',
-		  data: dataToSend,
-		  success: function (data) {
-			console.log("SUCCESS");
-			console.log(data);
-		  },
-		  error : function(err){
-			console.log("ERROR");
-		  }
-		});
-	}
+
+	var dataToSend = {action:'updateLives', data:this.lives};
+	$.ajax({
+	  url: 'api.php',
+	  method: 'POST',
+	  data: dataToSend,
+	  success: function (data) {
+		console.log("SUCCESS");
+		console.log(data);
+		},
+	  error : function(err){
+		console.log("ERROR");
+	  }
+	});
 }
 
 Player.prototype.checkBestScore = function()
 {
-	if(this.score < this.bestScore)
+	if(this.score > this.bestScore)
 	{
 		this.bestScore = this.score;
 		var dataToSend = {action:'updateBestScore', data:this.bestScore};
